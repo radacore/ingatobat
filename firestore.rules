@@ -1,0 +1,79 @@
+rules_version = '2';
+
+// IngatObat — Firestore Security Rules (FR-18, deny-by-default).
+// Data keluarga disimpan di: family_groups/{familyId}/{koleksi}/{docId}
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function email() {
+      return request.auth != null && request.auth.token.email != null
+        ? request.auth.token.email.lower()
+        : '';
+    }
+
+    function signedIn() {
+      return request.auth != null && request.auth.token.email != null;
+    }
+
+    function accessDoc(familyId) {
+      return /databases/$(database)/documents/family_groups/$(familyId)/access/$(email());
+    }
+
+    function isMember(familyId) {
+      return signedIn() && exists(accessDoc(familyId));
+    }
+
+    function isAdmin(familyId) {
+      return isMember(familyId) && get(accessDoc(familyId)).data.role == 'admin';
+    }
+
+    function isOwner(familyId) {
+      return signedIn() &&
+        get(/databases/$(database)/documents/family_groups/$(familyId)).data.owner_email == email();
+    }
+
+    // ------------------------------------------------------------ Grup keluarga
+    match /family_groups/{familyId} {
+      allow read: if isMember(familyId);
+      allow create: if signedIn() && request.resource.data.owner_email == email();
+      allow update, delete: if isOwner(familyId);
+
+      // Keanggotaan & peran.
+      match /access/{memberEmail} {
+        allow read: if isMember(familyId);
+        // Admin mengelola undangan/peran; anggota hanya boleh bergabung (self,
+        // tetap role 'member', tidak menaikkan peran sendiri).
+        allow create: if isAdmin(familyId) ||
+          (memberEmail == email() && request.resource.data.role == 'member');
+        allow update: if isAdmin(familyId) ||
+          (memberEmail == email() && request.resource.data.role == resource.data.role);
+        allow delete: if isAdmin(familyId) || memberEmail == email();
+      }
+
+      // Perangkat terdaftar (FR-19).
+      match /devices/{deviceId} {
+        allow read, write: if isMember(familyId);
+      }
+
+      // Data operasional keluarga — hanya anggota.
+      match /members/{docId}        { allow read, write: if isMember(familyId); }
+      match /medicines/{docId}      { allow read, write: if isMember(familyId); }
+      match /schedules/{docId}      { allow read, write: if isMember(familyId); }
+      match /dose_logs/{docId}      { allow read, write: if isMember(familyId); }
+      match /stock_ledger/{docId}   { allow read, write: if isMember(familyId); }
+      match /control_visits/{docId} { allow read, write: if isMember(familyId); }
+      match /side_effects/{docId}   { allow read, write: if isMember(familyId); }
+    }
+
+    // --------------------------------------------------------- Indeks undangan
+    match /email_index/{emailDoc} {
+      allow read: if signedIn() && emailDoc == email();
+      // Admin grup menulis undangan; anggota yang diundang boleh menandai
+      // dirinya bergabung tanpa mengubah family_id.
+      allow create: if signedIn() && isAdmin(request.resource.data.family_id);
+      allow update: if isAdmin(resource.data.family_id) ||
+        (emailDoc == email() && request.resource.data.family_id == resource.data.family_id);
+      allow delete: if signedIn() && emailDoc == email();
+    }
+  }
+}

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="#FFFFFF">
+
+    <TextView
+        android:id="@+id/widget_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Agenda Hari Ini"
+        android:textStyle="bold"
+        android:textColor="#0F766E"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/widget_items"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:lineSpacingExtra="2dp"
+        android:text="Belum ada jadwal"
+        android:textColor="#1F2937"
+        android:textSize="12sp" />
+
+</LinearLayout>

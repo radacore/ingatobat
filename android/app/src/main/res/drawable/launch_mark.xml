@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Logo splash: jam alarm putih, pusat jam di (54,58).
+     Versi animasi: launch_mark_avd.xml. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group android:name="mark" android:pivotX="54" android:pivotY="58">
+        <group android:name="bellL" android:pivotX="30" android:pivotY="32">
+            <path
+                android:pathData="M30,32 m-9,0 a9,9 0 1,0 18,0 a9,9 0 1,0 -18,0"
+                android:fillColor="#FFFFFF" />
+        </group>
+        <group android:name="bellR" android:pivotX="78" android:pivotY="32">
+            <path
+                android:pathData="M78,32 m-9,0 a9,9 0 1,0 18,0 a9,9 0 1,0 -18,0"
+                android:fillColor="#FFFFFF" />
+        </group>
+        <path
+            android:pathData="M48,20 h12 v8 h-12 z"
+            android:fillColor="#FFFFFF" />
+        <path
+            android:pathData="M44,82 L37,93 M64,82 L71,93"
+            android:strokeWidth="6"
+            android:strokeColor="#FFFFFF"
+            android:strokeLineCap="round" />
+        <path
+            android:pathData="M54,58 m-26,0 a26,26 0 1,0 52,0 a26,26 0 1,0 -52,0"
+            android:fillColor="#FFFFFF" />
+        <path
+            android:pathData="M54,58 m-16,0 a16,16 0 1,0 32,0 a16,16 0 1,0 -32,0"
+            android:fillColor="#1565C0" />
+        <path
+            android:pathData="M54,58 L54,47 M54,58 L64,63"
+            android:strokeWidth="5"
+            android:strokeColor="#FFFFFF"
+            android:strokeLineCap="round" />
+        <path
+            android:pathData="M54,58 m-3,0 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0"
+            android:fillColor="#FFFFFF" />
+    </group>
+</vector>
